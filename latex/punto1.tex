@@ -1,0 +1,68 @@
+
+\subsection{Descripción del método}
+Este método para hallar los valores propios de una matriz se basa en las raíces del polinomio obtenido al realizar el siguiente cálculo:\\ \begin{center}
+   $det(A-\lambda I) = 0$
+\end{center}
+De donde: A es la matriz a la que queremos hallar sus valores propios; $\lambda$ es la variable del polinomio; I es la matriz identidad.\\
+
+Y para hallar sus vectores propios, teniendo los valores propios, sería resolver la ecuación:\\ \begin{center}
+    $(A-\lambda_0 I)v = 0$
+\end{center}
+
+De donde: A es la matriz a la que queremos hallar sus vectores propios; $\lambda_0$ es algún valor propio de A; I es la matriz identidad; $v$ será aquel vector propio correspondiente a $\lambda$. \\
+
+Una vez planteado el polinomio característico de la primera parte, hallamos sus raíces, donde dichas raíces serán sus valores propios. Usamos cada valor propio $\lambda_0$ para hallar un vector propio relacionado a dicho valor.\\
+
+Sea $A= \begin{bmatrix}a_{ij}\end{bmatrix}$ una matriz de tamaño $nxn$
+Para hallar el determinante de la matriz A se recurre a la fórmula iterativa $$det(A)=\sum_{k=1}^n (-1)^{k-1}a_{1k}det(A_{1k})$$ 
+Donde $A_{1k}$ es la submatriz cuadrada al eliminar la fila 1 y la columna k, para cada k.\\
+Donde usamos el método de Newton-Raphson para poder hallar las raíces (valores propios) con aproximaciones de las raíces suficientemente buenas (Que cumplan las condiciones para la convergencia de este método)\\
+Para hallar el vector $v$ tal que se cumpla la ecuación $$(A-\lambda_0 I)v=0$$ Para hallar dichos vectores podemos usar la función de python np.linalg.solve para hacerlo de forma eficiente, al estar basada en un método númerico eficiente para esta tarea
+
+\subsection{Análisis de error}
+En este caso, el método para hallar los valores propios de A de tamaño $nxn$ tendremos una convergencia de $O(n!)$ para hallar el polinomio característico y una convergencia de $O(n^2log(\frac{1}{\varepsilon}))$.
+\subsubsection{Teorema}
+La convergencia para hallar la determinante de una matriz de tamaño $n$ es de $O(n!)$ (con el método planteado) \\ 
+
+\textbf{Prueba:} Sea $T(n)$ la convergencia para hallar el determinante de una matriz de $nxn$, esta función esta dada por la siguiente fórmula: $$T(n)=nT(n-1)+O(n)$$
+Dado que se realizan $n$ multiplicaciones y $(n-1)$ sumas, para luego realizar nuevamente la expansión para una matriz de $(n-1)x(n-1)$ en cada término 
+Así obtenemos la recursión: $$T(n)=n(n-1)T(n-2)+O(n^2)$$ $$T(n)=n(n-1)(n-2)T(n-3)+O(n^3)$$ $$.$$ $$.$$
+ $$.$$ Donde es fácilmente ver que $T(1)=O(1)$.\\ 
+ \begin{center}
+     $\therefore T(n)=O(n!)$ $\blacksquare$
+ \end{center}
+\subsubsection{Teorema}
+La convergencia para hallar todas las raíces del polinomio característico (valores propios de la matriz) es de $O(n^2log(\frac{1}{\varepsilon}))$ (con el método planteado)\\
+
+\textbf{Prueba:} Sea $\varepsilon$ la tolerancia para hallar cada raíz del polinomio y la iteración del método de Newton Raphson $$x_{k+1}=x_k+\frac{P(x_k)}{\frac{\mathrm{d} }{\mathrm{d} x}P(x_k)}$$.\\
+
+Veamos la complejidad para cada paso del método.\\
+\textbf{Paso 1:} Evaluar el polinomio, lo cual tiene una convergencia de $O(n)$\\
+\textbf{Paso 2:} Evaluar la derivada, lo cual, al ser la derivada de un polinomio tiene la misma convergencia que el paso anterior $O(n)$\\
+\textbf{Paso 3:} Calcular lo siguiente $\frac{P(x_k)}{\frac{\mathrm{d} }{\mathrm{d} x}P(x_k)}$, lo cual tiene un complejidad de $O(1)$ por lo que es despreciable \\
+\textbf{Paso 4:} Hallar $x_{k+1}$, al restar obtenemos una complejidad de $O(1)$ por lo que es despreciable \\
+El número de iteraciones tiene una complejidad de $O(log(\frac{1}{\varepsilon}))$ teniendo una buena estimación para la raíz original\\
+Por lo que para hallar una raíz tenemos una complejidad de $O(nlog(\frac{1}{\varepsilon}))$\\
+\textbf{Paso 5:} Hallando una raíz $\lambda_0$, podemos hallar un polinomio de grado $(n-1)$ $K(x)$ con las demás raíces dado por $$K(x)=\frac{P(x)}{(x-\lambda_0)}$$\\
+\textbf{Paso 6:} Reiterando los anteriores pasos para $K(x)$ $n$ veces para hallar las demás raíces, nos queda que la convergencia esta dada por $O(n^2log(\frac{1}{\varepsilon}))$ $\blacksquare$\\
+
+En este caso, el método para hallar los vectores propios de A de tamaño $nxn$ tendremos una convergencia de $O(n^3)$ dado que la función de python np.linalg.solve tiene una convergencia similar a métodos como LU
+\subsubsection{Teorema}
+El método LU para hallar vectores $v$ de tales que se cumpla la ecuación $$Av=b$$ Donde A sea una matriz y b un vector dado, tiene convergencia de $O(n^3)$\\
+
+\textbf{Prueba:} Veamos la complejidad para cada paso del método.\\
+\textbf{Paso 1:} La descomposición de A en las matrices L y U tales que: A=LU; L es una matriz triangular inferior; U es una matriz triangular superior. Usando eliminación Gaussiana podemos hallar dichas matrices, en donde realizamos lo siguiente.\\
+Eliminamos $(n-1)$ elementos de la primer columna $\Rightarrow$ $(n-1)$ operaciones de división para hallar los multiplicadores $\wedge$ $(n-1)^2$ restas y multiplicaciones para actualizar las filas restantes. Luego, iterativamente, para la k-columna eliminamos $(n-k)$ elementos\\ Por lo que el número total de operaciones a realizar es de $$\sum_{k=1}^{n-1}(n-k)^2=\sum_{i=1}^{n-1}i^2=\frac{n(n-1)(2n-1)}{6}$$ 
+\begin{center}
+    $\therefore$ Este paso tiene convergencia de $O(n^3)$
+\end{center}
+\textbf{Paso 2:} En este paso debemos resolver la ecuación $Ly=b$ hallando $y$ por medio de sustitución hacia adelante lo cual tiene convergencia de $O(n^2)$\\
+
+Se omitirá esta prueba dado que el siguiente paso tiene un razonamiento análogo\\
+\textbf{Paso 3:} En este paso debemos resolver la ecuación $Uv=y$ hallando $y$ por medio de sustitución hacia atrás lo cual tiene convergencia de $O(n^2)$\\
+Sean $v_i$ la $i$-entrada del vector $v$; $y_i$ la $i$-entrada del vector $y$; $u_{ij}$ la entrada de la matriz $U$ donde $i$ determina la fila y $j$ determina la columna. Realizamos la siguiente operación para cada valor de $1\leqslant i\leqslant n$ $$v_i=\frac{1}{u_{ii}}\left(y_i-\sum_{j=i+1}^n u_{ij}v_j\right)$$
+Así fácilmente veremos que para $v_n$ tendremos que realizar 0 operaciones, para $v_{n-1}$ realizamos 1 operación, y en general para $v_k$ haremos $(n-k)$ operaciones, por lo que el número total de operaciones sera de $$\sum_{k=1}^n(k-1)=\frac{n(n-1)}{2}$$ O equivalente a decir que tendremos una convergencia de $O(n^2)$ 
+\begin{center}
+    $\therefore$ Tendremos una convergencia total de $O(n^3)$ para este metodo $\blacksquare$
+\end{center}
+

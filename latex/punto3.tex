@@ -1,0 +1,183 @@
+
+\subsection{Descripción del método}
+Este método se basa en usar la descomposición de una matriz cuadrada $ n \;\text{x}\; n$ para determinar de forma directa los valores propios de la matriz. En específico, la descomposición requerida es de la siguiente forma: 
+
+$$  A = QR$$
+
+Donde  $Q$ es una matriz ortogonal (es decir, $Q^TQ = I$) y $R$ es una matriz triangular superior (es decir, $a_{ij} = 0$ para $ j < i$).  
+
+Mediante la descomposición y un proceso iterativo de la forma $A_{k+1} = R_kQ_k $, la secuencia de matrices de la forma $ {(A_k)}_{k \in N}^\infty $ converge a una matriz $T$ cuya diagonal contiene los valores propios de la matriz $A$.
+
+Antes de proceder con el algoritmo, se procede con una revisión teórica de su funcionamiento:
+
+\subsubsection{Proceso Gram-Schmidt para ortogonalización de matrices}
+
+Dada una matriz $ A \in  \mathbb {C}_ {nxn} $ cuyas columnas son linealmente independientes, entonces se puede hallar una descomposición de la forma $ A = QR$, donde  $Q$ es una matriz ortogonal y $R$ es una matriz triangular superior. La construcción se da de la siguiente forma:
+
+
+Escribiendo a A en términos de sus columnas: 
+
+$$
+A = [a_1, a_2, ... , a_n]
+$$
+
+Entonces con el siguiente proceso iterativo:
+
+$$
+u_1 = a_1 $$$$
+u_2 = a_2 - (a_2\cdot e_1)e_1, \;\;\;\;\; e_1 = \frac{u_1}{||u_1||}
+$$$$
+u_ {k+1} = a_ {k+1} - (a_ {k+1}\cdot e_1)e_1 - \cdot\cdot\cdot - (a_ {k+1}\cdot e_k)e_k, \;\;\;\; e_ {k+1} = \frac{u_{k+1}}{||u_{k+1}||} 
+$$
+
+Se puede representar a la matriz $A $ de la siguiente forma:
+
+$$
+A = [a_1, a_2, ... , a_n] = [e_1, e_2, ... , e_n]\begin{bmatrix}
+    a_1\cdot e_1 & a_2\cdot e_1 & \cdots  & a_n\cdot e_1 \\
+    0 & a_2\cdot e_2 & \cdots  & a_n\cdot e_2 \\
+    \vdots & &\ddots & \vdots \\
+    0 & &\cdots  & a_n\cdot e_n
+\end{bmatrix}
+$$
+
+Es importante notar que este proceso genera vectores $ u_k$ ortogonales entre ellos (es decir, $u_i\cdot u_j = 0 \; \forall i\; \neq j$). Aún más, los vectores $e_k$ también serán ortogonales entre ellos por ser múltiplos de los $u_k$. Por tanto, la matriz conformada por elementos $e_k$ será una matriz ortogonal.
+
+Por otro lado, se puede notar que la matriz de la derecha queda como una matriz triangular superior. Así, se puede ver que $A$ se puede descomponer como producto de $Q$ ortogonal y $R$ triangular superior.
+
+Ahora, será importante hacer una relación entre matrices de la forma $A = Q^TA'Q$, donde $Q$ es una matriz ortogonal. Diremos que el par $A, A'$ corresponden a matrices similares.
+
+\subsubsection{Teorema 3.1}
+ 
+Los valores propios de dos matrices similares $A, A'$ son iguales.\\
+
+\textbf{Demostración:}
+\\
+Como son similares, entonces $A' = Q^TAQ$. Ahora, veamos que aquellos $ \lambda \in \mathbb{C} $ y $ v \in \mathbb {R}^n $ que cumplen que:
+
+$$Av = \lambda v$$
+
+Tambien cumplen que:
+
+$$
+A'(Q^Tv) = Q^TAQ(Q^Tv) = Q^TAv = Q^T\lambda v = \lambda (Q^Tv)
+$$
+
+Por tanto, también serán valores propios de $A'$ (en este caso, el vector propio de $A'$ será $Q^Tv$ en vez de $v$).
+
+\subsection{Algoritmo de descomposición QR}
+
+El algoritmo de descomposición QR consiste en los siguientes pasos:
+
+Dada una matriz $A$ diagonalizable y cuyas columnas son linealmente independientes, entonces se pueden hallar los valores propios de la matriz mediante el siguiente proceso iterativo:
+
+\begin{enumerate}
+    \item Defina $A_0 = A$ y halle su descomposición QR de la forma $A = Q_0R_0$
+    \item Defina $A_i = R_ {i-1}  Q_ {i-1} $. Halle su descomposición QR de la forma $A_i = Q_{i}R_{i} $
+    \item Itere hasta cierta cantidad $M$ de iteraciones, definida por el usuario o hasta que se cumpla cierta tolerancia en los valores en el triangulo inferior de la matriz$A_i$. 
+    \item Cuando se haya dejado de iterar, defina los valores propios de $A$ como las entradas en la diagonal de la última matriz $A_i$ calculada. 
+\end{enumerate}
+
+\subsubsection{Convergencia del algoritmo de descomposición QR}
+Sin proporcionar una demostración formal, tratemos de entender por qué funciona este algoritmo.
+ 
+Dado que \( Q_i^{-1} = Q_i^T \) (debido a que todas las $Q_i$ son ortogonales), tenemos \( R_i = Q_i^T A_i \), y por lo tanto:
+\[
+A_{i+1} = Q_i^T A_i Q_i.
+\]
+Así, hemos llegado a una relación de similitud entre las matrices $A_ {i+1} $ y $A_i$; como se demostró por el teorema,  tendrán los mismos valores propios. Si iteramos la ecuación anterior, obtenemos:
+\[
+A_{i+1} = Q_i^T A_i Q_i = Q_i^T Q_{i-1}^T A_{i-1} Q_{i-1} Q_i = \cdots = Q_i^T \cdots Q_1^T A_1 Q_1 \cdots Q_i = P_i^T A_1 P_i,
+\]
+donde \( P_i = Q_1 \cdots Q_i \). Notemos que \( P_i \) es el producto de matrices ortogonales y, por lo tanto, es ortogonal.
+
+Bajo nuestras suposiciones de diagonalización para la matriz A, podemos escribir \( A = X D X^{-1} \), donde \( D = \text{diag}(\lambda_1, \ldots, \lambda_n) \) y \( X \) es una matriz real de vectores propios de \( A \). Sabemos que para X también existe una factorización \( X = QR \). Entonces:
+\[
+A = Q R D R^{-1} Q^{-1}.
+\]
+Por lo tanto, \( Q^{-1} A Q = R D R^{-1} \).  
+Dado que \( R D R^{-1} \) es el producto de matrices triangulares superiores, también es triangular superior. De esta forma, sabemos que \( Q^{-1} A Q = Q^T A Q \) es triangular superior. Notemos que los valores propios de \( A \) se encontrarán en la diagonal de \( Q^T A Q \).
+
+El teorema se demuestra mostrando que \( \lim_{i \to \infty} P_i = Q \), ya que esto implica que:
+\[
+\lim_{i \to \infty} A_{i+1} = \lim_{i \to \infty} P_i^T A_1 P_i = Q^T A Q.
+\]
+En otras palabras, las matrices \( A_i \) están convergiendo hacia una matriz triangular superior cuyos elementos diagonales son los valores propios de \( A \).
+
+Para ver por qué \( \lim_{i \to \infty} P_i = Q \), examinamos la cantidad \( P_i U_i \), donde \( U_i = R_i R_{i-1} \cdots R_1 \). Entonces:
+\[
+P_i U_i = Q_1 \cdots Q_i R_i \cdots R_1 = Q_1 \cdots Q_{i-1} A_i R_{i-1} \cdots R_1 = P_{i-1} A_i U_{i-1}.
+\]
+Pero como \( A_{i+1} = P_i^T A_1 P_i \), tenemos \( P_i A_{i+1} = A_1 P_i \), o, reduciendo los índices en uno:
+\[
+P_{i-1} A_i = A_1 P_{i-1}.
+\]
+Por lo tanto:
+\[
+P_i U_i = A_1 P_{i-1} U_{i-1}.
+\]
+Si iteramos esta identidad, obtenemos:
+\[
+P_i U_i = (A_1)^{i-1} P_1 U_1 = (A_1)^{i-1} Q_1 R_1 = A^i.
+\]
+
+Utilizando el hecho de que \( A = XDX^{-1} \), también tenemos que \( A_i = X D_i X^{-1} \). Sabemos que \( X = QR \) y, por hipótesis, \( X^{-1} = LU \) (es posible encontrarle una descomposición LU). Por lo tanto:
+\[
+A_i = QR D_i LU = QR(D_i L D_i^{-1})D_i U.
+\]
+Al igualar estas dos expresiones para \( A_i \), obtenemos:
+\[
+P_i U_i = QR(D_i L D_i^{-1})D_i U.
+\]
+El paso clave en la demostración es mostrar que:
+\[
+\lim_{i \to \infty} D_i L D_i^{-1} = I.
+\]
+Asumiendo por el momento que esto es cierto, el lado derecho se convierte en \( QR D_i U \). Sin embargo, \( R D_i U \) es el producto de matrices triangulares superiores y, por lo tanto, también es triangular superior. Así, esencialmente podemos identificar \( \lim_{i \to \infty} P_i \) con \( Q \), ya que ambas son matrices ortogonales, y \( \lim_{i \to \infty} U_i \) con \( \lim_{i \to \infty} R D_i U \), ya que ambas cantidades son matrices triangulares superiores. 
+
+Volviendo al paso clave, observamos que la matriz \( D_i L D_i^{-1} \) es una matriz triangular inferior cuyo elemento en la posición \( j, k \) está dado por \( l_{jk}(\lambda_j / \lambda_k)^i \), cuando \( j > k \). Dado que \( |\lambda_j / \lambda_k| < 1 \) para \( j > k \), tenemos que:
+\[
+\lim_{i \to \infty} D_i L D_i^{-1} = I.
+\]
+
+De lo anterior, se puede concluir también que la tasa de convergencia de este método depende de los valores propios de la matriz $A$, puesto que los elementos fuera de la diagonal dependen de la razón entre los valores propios. 
+
+\subsection{Posibles mejores al algoritmo de descomposición QR}
+
+
+Para mejorar los resultados del algoritmo QR, se pueden aplicar diversas técnicas que optimizan tanto las propiedades de la matriz \( A \) como el propio proceso del algoritmo. A continuación, se describen algunas de estas mejoras:
+
+\subsubsection{1. Mejoras en la matriz \( A \)}
+\begin{enumerate}
+    \item \textbf{Reordenamiento espectral:}
+    Si los valores propios de \( A \) están muy cercanos entre sí, el algoritmo QR puede converger más lentamente. Una transformación inicial, como la reordenación espectral, puede separar mejor los valores propios dominantes y acelerar la convergencia.
+
+    \item \textbf{Reducción a forma Hessenberg:}
+    Reducir la matriz \( A \) a una forma Hessenberg (triangular con una banda subdiagonal) preserva los valores propios y disminuye el número de operaciones necesarias en cada iteración. Esta reducción mantiene la estabilidad numérica del algoritmo.
+
+    \item \textbf{Transformación de similitud previa:}
+    Aplicar una transformación de similitud, como \( B = P^T A P \), donde \( P \) es una matriz ortogonal adecuada, puede hacer que \( A \) sea más fácil de procesar numéricamente. Por ejemplo, si \( A \) es simétrica, esta transformación puede garantizar mejor la convergencia.
+
+    \item \textbf{Normalización de la matriz:}
+    Si los elementos de \( A \) son muy grandes o muy pequeños, pueden producir errores numéricos. Escalar \( A \) para que tenga una norma adecuada (por ejemplo, \( \|A\| \approx 1 \)) puede mejorar la precisión.
+
+\end{enumerate}
+
+\subsubsection{2. Mejoras en el algoritmo QR}
+\begin{enumerate}
+    \item \textbf{Uso del algoritmo QR con desplazamiento (shift):}
+    Incorporar un desplazamiento espectral \( \mu \) mejora la convergencia. Esto se logra al redefinir \( A_i - \mu I \) en cada paso, donde \( \mu \) es una aproximación de los valores propios dominantes. Los desplazamientos pueden calcularse con métodos como el desplazamiento de Rayleigh.
+
+    \item \textbf{Descomposición QR implícita:}
+    En lugar de calcular explícitamente \( Q \) y \( R \), se pueden usar métodos implícitos para reducir el tiempo computacional. Un ejemplo es el uso del algoritmo de Francis (también conocido como el método QR implícito).
+
+    \item \textbf{Aceleración por bloques:}
+    Procesar bloques de la matriz en lugar de realizar iteraciones sobre toda \( A \) puede aprovechar mejor las arquitecturas modernas de hardware y reducir los tiempos de cómputo.
+
+    \item \textbf{Uso de precondicionadores:}
+    Los precondicionadores pueden modificar \( A \) para mejorar la convergencia del algoritmo. Por ejemplo, aplicar un precondicionador diagonal puede mejorar las propiedades espectrales de la matriz.
+
+    \item \textbf{Factores de estabilización numérica:}
+    En ciertas implementaciones, es necesario garantizar que \( R \) tenga elementos diagonales positivos para evitar inestabilidad numérica. Asegurarse de esta propiedad mejora la precisión en cálculos sucesivos.
+
+\end{enumerate}

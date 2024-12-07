@@ -1,0 +1,75 @@
+En este método se encuentra el autovalor "dominante" o con mayor valor absoluto de una matriz $A$ cuadrada y diagonalizable y su vector propio normalizado respectivo. Este proceso de normalizado seda cuando la componente más grande del vector $V$ es 1.
+
+Supongamos que la matriz $A$ tiene un valor propio dominante $\lambda_1$ y un vector propio $V$ normalizado correspondiente. Esta pareja se puede  encontrar con el siguiente proceso iterativo.
+
+\begin{align*}
+Y_{k}&=AX_{k}\qquad X_{0}=\begin{bmatrix}
+1 & 1 & \dots & 1
+\end{bmatrix}^{\top} \\
+X_{k+1}&= \frac{1}{c_{k+1}}Y_{k} \qquad c_{k+1}=\max_{1\leq i\leq n}\left|(Y_{k})_{i}\right| 
+\end{align*}
+
+$c_{k+1}$ es la coordenada de $Y_k$ con mayor  valor absoluto. Tenemos  que las secuencias $\{X_k\}$ y $\{c_k\}$ convergen a
+
+\begin{equation*}
+    \lim_{ n \to \infty } X_{k}=V_{1}\qquad \lim_{ n \to \infty } c_{k}=\lambda_{1}
+\end{equation*}
+
+Esta convergencia se puede probar de la siguiente forma:
+
+\textbf{Prueba:} Como $A$tiene $n$ valores propios también se tienen $n$ valores propios $V_i$ linealmente independientes que forman una base para $\mathbb{R}^n$, con esta base se puede representar el vector inicial $X_0$ como
+
+\begin{equation*}
+    X_{0}=b_{1}V_{1}+\dots +b_{n}V_{n}
+\end{equation*}
+
+Aplicando las  iteraciones obtenemos lo siguiente:
+
+\begin{align*}
+Y_{0}=AX_{0}&=\mathcal{A}(b_{1}V_{1}+\dots +b_{n}V_{n}) \\
+&=b_{1}\lambda_{1}V_{1}+\dots b_{n}\lambda_{n}V_{n} \\
+&=\lambda_{1}\left[b_{1}V_{1}+b_{2} \left( \frac{\lambda_{2}}{\lambda_{1}} \right)V_{2}+ b_{n} \left( \frac{\lambda_{n}}{\lambda_{1}} \right)V_{n}\right] 
+\end{align*}
+
+y con $c_i$ el componente de mayor valor absoluto de $Y_k$
+
+\begin{align*}
+X_{1}&=\frac{\lambda_{1}}{c_{1}} \left[b_{1}V_{1}+b_{2} \left( \frac{\lambda_{2}}{\lambda_{1}} \right)V_{2}+\dots+ b_{n} \left( \frac{\lambda_{n}}{\lambda_{1}} \right)V_{n}\right]  \\
+&\vdots \qquad \qquad \vdots \qquad \qquad \vdots \qquad \qquad \vdots \qquad \qquad \vdots \\
+X_{k}&=\frac{\lambda_{1}^{k}}{c_{1}c_{2}\dots c_{k-1}} \left[b_{1}V_{1}+b_{2} \left( \frac{\lambda_{2}}{\lambda_{1}} \right)^{k}V_{2}+\dots+ b_{n} \left( \frac{\lambda_{n}}{\lambda_{1}} \right)^{k}V_{n}\right] 
+\end{align*}
+
+Como asumimos que $|\lambda_1|>|\lambda_2|\geq\dots\geq|\lambda_n|$ tenemos que:
+
+\begin{equation*}
+    \lim_{ k \to \infty } b_{i} \left( \frac{\lambda_{i}}{\lambda_{1}} \right)^{k}V_{i}=0\qquad\rightarrow\qquad \lim_{ k \to \infty } X_{k}=\lim_{ k \to \infty } \frac{b_{1}\lambda_{1}^{k}}{c_{1}c_{2}\dots c_{k-1}}V_{1}
+\end{equation*}
+
+Como en cada iteración se busca normalizar $V_1$ tal que  su mayor componente es 1 se tiene que el coeficiente escalar de $V_1$ también tiene que ser 1, entonces:
+
+\begin{equation*}
+    \lim_{ k \to \infty } \frac{b_{1}\lambda_{1}^{k}}{c_{1}c_{2}\dots c_{k-1}}=1\qquad\rightarrow\qquad \lim_{ k \to \infty } X_{k}=V_{1}
+\end{equation*}
+
+Agarrando este resultado para $k-1$ en el siguiente limite tenemos lo siguiente
+
+\begin{equation*}
+    \lim_{ k \to \infty } \frac{\lambda_{1}}{c_{k}}=\lim_{ k \to \infty } \frac{b_{1}\lambda_{1}^{k}/(c_{1}c_{2}\dots c_{k})}{b_{1}\lambda_{1}^{k-1}/(c_{1}c_{2}\dots c_{k-1})}=1
+\end{equation*}
+
+Con esto tenemos que $\lim_{ k \to \infty } c_{k}=\lambda_{1}\quad \blacksquare$.
+
+Para la velocidad de convergencia tomamos el siguiente ratio de error
+
+\begin{align*}
+X_{k}&=\frac{b_{1}\lambda_{1}^{k}}{c_{1}\dots c_{k}}V_{1}+\frac{1}{c_{1}\dots c_{k}}\sum_{i=2}^{n} \left( \frac{\lambda_{i}}{\lambda_{1}} \right)^{k}V_{i} \\
+&=\frac{b_{1}\lambda_{1}^{k}}{c_{1}\dots c_{k}}V_{1}+\mathcal{O}(r^{k})
+\end{align*}
+
+Con $r=\frac{\lambda_2}{\lambda_1}$ y $e_{k} \propto r^{k}$ con lo que se llega a
+
+\begin{equation*}
+    \| e_{k+1} \| \approx r\| e_{k} \| 
+\end{equation*}
+
+Por lo que el error decrece linelmente.
