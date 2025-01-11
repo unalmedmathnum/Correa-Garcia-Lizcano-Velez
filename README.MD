@@ -4,7 +4,7 @@
 
 - Pablo De Jesus Garcia Vega
 - Nixon Daniel Lizcano Santana
-- Emmanuel Velez Mariaca
+- Emanuel Velez Mariaca
 - Daniel Fernando Correa Carreño
 
 ## Instrucciones
