@@ -1,0 +1,45 @@
+\section{Perspectiva desde el análisis de datos}
+
+Una de las aplicaciones más importantes del método de mínimos cuadrados es dentro del ámbito de la Ciencia de los Datos. En específico, para calcular funciones que se aproximen al comportamiento de cierto conjunto de datos, es muy útil la aplicación de este método para encontra aquella función cuya distancia de los datos sea la más pequeña, por ejemplo
+
+\\ Debido a la gran cantidad de aplicaciones existentes del método dentro de la Ciencia de los Datos, nos enfocaremos en el reconocido método de regresión lineal, que intenta hallar, dado un conjunto de datos de la forma $\{(x_i, y_i)_{i\in [1, n]}\}$, la función lineal $p(x) = a_1x \; + a_2$ cuya distancia a los datos sea mínima. 
+
+\subsection{Regresión lineal}
+
+Sea $\{(x_i, y_i)_{i\in [1, n]}\}$ un conjunto de datos donde $x$ es la variable independiente y $y$ es la variable dependiente de $x$. Se quiere ajustar los datos con una linea recta de la forma $p(x) = a_1x \;+ a_2$; esto es imposible al menos de que todos los puntos estén alineados. Por tanto, se busca una lína que minimice la siguiente cantidad:
+
+$$S = \sum_{i = 1}^{n}(y_i - p(x_i))^2$$
+
+Reemplazando $p(x_i)$ por $a_1x_i \; + a_2$, se obtiene que:
+
+$$F(a_1,a_2) = \sum_{i = 1}^{n}(y_i - (a_1x_i \; + a_2))^2$$
+
+Notemos que el proceso que se está realizando es un caso específico del proceso algebraico mostrado en la perspectiva algebraica; aquí, las funciones usadas para el ajuste son $f_1(x) = x $ y $ f_2(x) = 1$. 
+
+\\Usando el resultado obtenido al final de la generalización de la perspectiva algebraica:
+$$\begin{bmatrix}
+    \sum_{i=1}^n(f_1(x_i))^2 & \sum_{k=1}^nf_1(x_i)f_2(x_i) &  \\
+    \sum_{i=1}^nf_2(x_i)f_1(x_i) & \sum_{k=1}^n(f_2(x_i))^2 & 
+ 
+\end{bmatrix}
+\begin{bmatrix}
+    c_1\\c_2\
+\end{bmatrix} = \begin{bmatrix}
+    \sum_{k=1}^n f_1(x_k)y_k\\\sum_{k=1}^n f_2(x_k)y_k
+\end{bmatrix}$$
+
+Se obtiene:
+
+$$\begin{bmatrix}
+    \sum_{i=1}^n(x_i)^2 & \sum_{k=1}^nx_i &  \\
+    \sum_{i=1}^nx_i & n & 
+ 
+\end{bmatrix}
+\begin{bmatrix}
+    c_1\\c_2\
+\end{bmatrix} = \begin{bmatrix}
+    \sum_{k=1}^nx_i y_i\\\sum_{k=1}^n y_i
+\end{bmatrix}$$
+
+
+De aquí, se pueden obtener las soluciones para $a_1 $ y $a_2$. Notar que, para otro ajuste que no sea necesariamente lineal, el uso de la fórmula generalizada sirve como insumo para llegar al sistema de ecuaciones lineales cuya solución proveer los coeficientes $a_i$. Para el caso del código de nuestro caso, se analizan distintos ajustes posibles para obtener, como polinomios de distintos grados, hasta obtener una solución que, sin problemas de overfitting, genere el error residual más pequeño.

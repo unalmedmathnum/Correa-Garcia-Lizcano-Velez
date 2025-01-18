@@ -1,12 +1,12 @@
 \section{Teoría del método:}
-El objetivo de este método es el de hallar la función continua que mas se adecuado a unos datos dados de la forma $(x,y)$, de donde, $x$ es la variable independiente y $y$ es una variable que depende de $x$. Y se determina la función mas adecuada por medio del criterio de mínimo error cuadrático.\\
+El objetivo de este método es el de hallar la función continua que mas se adecue a un conjunto de datos dados de la forma $(x,y)$, de donde, $x$ es la variable independiente y $y$ es una variable que depende de $x$. El método determina la función mas adecuada por medio del criterio de mínimo error cuadrático:\\
 
 Sea $A:=\{(x_k,y_k)\}_{k=1}^n$ el conjunto de par ordenados de los datos dados, donde $y_k$ depende de $x_k$. Y sea $\{f_j(x)\}_{j=0}^m$ un conjunto de funciones linealmente independiente.\\
 
 Queremos hallar una función $f(x)$ continua tal que:
 $$f(x)=\sum_{j=0}^mc_jf_j(x)$$
 $$f(x_k)\approx y_k$$
-De donde, $c_j\in\mathbb{R}$ y el criterio de aproximación esta dado por el "Criterio mínimo error cuadrático".\\
+De donde, $c_j\in\mathbb{R}$ y el criterio de aproximación esta dado por el mínimo error cuadrático, como se muestra a continuación:.\\
 
 \subsubsection{Mínimo error cuadrático:}
 Definimos el residuo para cada punto como $$e_k:=y_k-f(x_k)$$
@@ -14,7 +14,7 @@ El criterio de mínimo error cuadrático nos dice que minimicemos la expresión 
 Lo cual es equivalente a minimizar la expresión:
 $$E_c(f)=\frac{1}{n}\sum_{k=1}^ne_k^2$$
 \section{Perspectiva algebraica:}
-Para implementar el método debemos tener en cuenta que es lo que queremos hallar, y en reducidas cuentas, podemos decir que queremos llegar a hallar los coeficientes en la suma que define a la función a la que queremos llegar, en otras palabras, queremos hallar $c_j\in\mathbb{R}$ $\forall j\in\{1,2,...,m\}$ tal que $E_c(f)$ sea el mínimo. Esto lo podemos hacer através de derivar la expresión de $E_c(f)$ con respecto a cada coeficiente $c_j$.\\
+Para implementar el método debemos tener en cuenta qué es lo que se quiere hallar:  $c_j\in\mathbb{R}$ $\forall j\in\{1,2,...,m\}$ tal que $E_c(f)$ sea el mínimo. Esto lo podemos hacer através de derivar la expresión de $E_c(f)$ con respecto a cada coeficiente $c_j$.\\
 
 Primero escribamos $E_c(f)$ en términos de las funciones $\{f_j(x)\}_{j=1}^m$ tales que $f=\sum_{j=1}^mc_jf_j$
 $$E_C(f)=\frac{1}{n}\sum_{k=1}^ne_k^2=\frac{1}{n}\sum_{k=1}^n\left(y_k-f(x_k)\right)^2=\frac{1}{n}\sum_{k=1}^n\left(y_k-\sum_{j=1}^mc_jf_j(x_k)\right)^2$$
@@ -38,4 +38,7 @@ $$
     \sum_{k=1}^n f_1(x_k)y_k\\\sum_{k=1}^n f_2(x_k)y_k\\\vdots\\\sum_{k=1}^n f_m(x_k)y_k\\
 \end{bmatrix}
 $$
-Hallando el vector del lado izquierdo de la ecuación, podemos obtener los valores deseados para hallar $f$ la mejor aproximación según el criterio de aproximación cuadrático.
+Hallando el vector del lado izquierdo de la ecuación, podemos obtener los valores deseados para hallar $f$ -  la mejor aproximación según el criterio de aproximación cuadrático.
+
+
+
