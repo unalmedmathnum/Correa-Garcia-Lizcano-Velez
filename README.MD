@@ -9,6 +9,6 @@
 
 ## Instrucciones
 
-La explicacion de los metodos con su analisis de convergencia se encuentra en el archivo pdf `Teoria de los metodos.pdf`, el codigo fuente en latex de ese archivo se encuentra en la carpeta `latex/`.
+La teoría con las respectivas perspectiva del tema se encuentra en la carpeta `latex/', en un archivo .pdf. En la misma carpeta encontrará el código de Latex que soporta dicho pdf.
 
-Para poder ejecutar los codigos de prueba se recomienda instalar las librerias marcadas en el archivo `requirements.txt`. Los codigos de ejemplo se encuentran en los notebooks de jupyter (archivos terminados en `.pynb`).
+Para poder ejecutar los codigos de prueba se recomienda instalar las librerias marcadas en el archivo `requirements.txt`. Los codigos de ejemplo se encuentran en los notebooks de jupyter (archivos terminados en `.ipynb`).
