@@ -1,0 +1,189 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{times} 
+\usepackage{hyperref}
+
+\title{Tarea 3 - Análisis Numérico}
+\author{Daniel Correa, Pablo Garcia, Nixon Lizcano, Emanuel Velez}
+\date{Febrero 2025}
+
+\begin{document}
+
+
+\maketitle
+
+\section{Introducción}
+
+El objetivo de este informe es de presentar las formulaciones matemáticas usadas para modelar la dinámica del líquido en una taza de café. 
+
+\subsection{Principales afirmaciones y aproximaciones del problema}
+
+Los principales resultados teóricos a los que se llegan provienen de asumir las siguientes afirmaciones como base matemática:
+
+1. El movimiento del líquido dentro de una taza de café se puede aproximar a un sistema mecánico de tipo péndulo, en el que el soporte del péndulo también tiene una posición que varía con el tiempo, así como lo hace posición del péndulo.
+\\
+
+El sistema se puede ver de la siguiente forma:
+
+
+\begin{wrapfigure}
+    \centering
+    \includegraphics[width=1\linewidth]{image_2025-02-15_103830228.png}
+    \caption{Obtenido de Guarín-Zapata, N. (2021).}
+\end{wrapfigure}
+
+Para este sistema, la posición de la partícula $m$ está descrita en términos del ángulo $\theta(t)$ y del radio, que en este caso puede ser variable con respecto al tiempo, es decir:
+
+$$
+x(t) = r(t)\sin(\theta(t)) \; \; \; \; \text{y} \; \; \;
+z(t) = -r(t)\cos(\theta(t))
+$$
+
+
+2. Basados en lo descrito por R. Ibrahim en el libro  \textit{Liquid Sloshing Dynamics}, el movimiento de la taza de café es, en resumen, el movimiento de un tanque a lo largo de alguna trayectoria en el espacio, en el que la frecuencia natural de la partícula (en este caso, el líquido) es dependiente de la relación entre la altura del cilindro y su ancho. Este resultado es obtenido tras aplicar la ecuación Euleriana de dinámica de fluidos y el principio de Hamilton con respecto a la variación del Lagrangiano (energía del sistema) en una trayectoria. Esta formulación se puede ver desde la página 5 hasta la página 13 del libro mencionado. El resultado al que se llega es el siguiente:
+
+$$
+\omega_{mn}^{2} = \frac{g \epsilon_{mn}}{R} \tanh \left( \epsilon_{mn} \frac{H}{R} \right) \left[ 1 + \frac{\sigma}{\rho g} \left( \frac{\epsilon_{mn}}{R} \right)^2 \right]
+$$
+
+Donde $H$ es la altura de la taza, $R$ su radio, $g $ la gravedad, $\rho$ es la densidad del fluido y $\sigma$ es la tensión superficial del fluido.
+
+\subsection{Derivación hacia una ecuación diferencial de uso en análisis numérico}
+
+Con estas consideraciones, se quiere llegar a una ecuación diferencial cuya solución permita modelar el movimiento del líquido dentro de una taza de café. 
+
+El primer resultado al que se llega es usando las condiciones del Lagrangiano del sistema, que corresponde con la diferencia entre la energía cinética y la energía potencial.
+
+Primero, notemos que estas energías están dadas, de forma respectiva, por: 
+
+$$
+E_c = \frac{1}{2}mv^2 \\
+$$
+
+$$
+E_p = mgz
+$$
+
+Donde $v$ corresponde con la magnitud de la velocidad de la partícula y $z$ su altura.
+
+Notemos también que la velocidad del sistema, dada por dos componentes (la velocidad en $x$ y la velocidad en $z$, ya que se asume que la mano no tendrá movimientos en $y$), tiene la siguiente magnitud:
+
+$$ |v| = \sqrt{(v_x(t) - v_{x_0}(t))^2  \; + \; (v_z(t) - v_{z_0}(t))^2}$$
+
+Donde $v_x(t)$ se refiere a la velocidad de la partícula en el sentido $x$ y $v_{x_0}(t)$ se refiere a la velocidad del pivote en el sentido $x$ (de igual forma sucede con la direccion $z$). Es importante tener en cuenta que la resta es porque se requiere obtener el valor neto de la velocidad en el sistema. Ahora, se procede a sustituir en la ecuación $v_x(t)$ por $x'(t)$, pues se sabe que la velocidad corresponde con la derivada de la posición con respecto al tiempo:
+
+$$ |v| = \sqrt{(x'(t) - x_0'(t))^2  \; + \; (z'(t) - z_0'(t))^2}$$
+
+Elevando al cuadrado y sustituyendo en la ecuación de la energía cinética, se obtiene que:
+
+
+$$E_c = \frac{1}{2}m((x'(t) - x_0'(t))^2  \; + \; (z'(t) - z_0'(t))^2)$$
+
+Así, denotando por $L$ al Lagrangiano, llega a que:
+
+$$
+L = E_c - E_p = \frac{m}{2}[ ((x'(t) - x_0'(t))^2  \; + \; (z'(t) - z_0'(t))^2) \; + \; g(z+z_0)]
+$$
+
+Habiendo definido el Lagrangiano en términos de las derivadas de las funciones de posición $x(t)$ y $z(t)$, se procede a usar la ecuación de Euler-Lagrange, que permite obtener una ecuación diferencial a partir del Lagrangiano. Esta ecuación se describe de la siguiente forma:
+
+\\
+
+Para $L = L(t, q(t), v(t))$ un Lagrangiano ( $q(t)$ se refiere a la trayectoria de una partícula y $v(t)$ se refiere a las velocidades a lo largo de esa trayectoria), una trayectoria $q(t)$ del espacio será un punto estacionario (es decir, un mínimo con respecto a la energía usada a lo largo de cualquier trayectoria que empiece en $q(0) = a$ y termine en $q(s) = b$ ) si y solo si:
+
+$$\frac{\partial L}{\partial \dot{q}^{i}} (t, q(t), \dot{q}(t)) - \frac{\text{d}}{\text{d}t} \frac{\partial L}{\partial \dot{q}^{i}} (t, q(t), \dot{q}(t)) = 0, \quad i = 1, \dots, n.$$
+
+El uso de esta ecuación es debido a que se asume que el humano camina usando la mínima energía a lo largo de cualquier trayecto. Por lo tanto, la trayectoria usada debe ser justamente un punto estacionario.
+
+Así, con esta ecuación y sustituyendo las derivadas dentro del Lagrangiano en términos del ángulo $\theta$ y las funciones $x_0(t)$ y $z_0(t)$, se llega a lo siguiente:
+
+$$
+r^2 \ddot{\theta} + r \left[ g + \ddot{z}_0 \right] \sin\theta + r \ddot{x}_0 \cos\theta + 2r\dot{r} \dot{\theta} = 0
+$$
+
+Usando las aproximaciones por Taylor de $sin(\theta)$ y $cos(\theta)$ (solo los dos primeros términos), se obtiene:
+
+$$
+r^2 \ddot{\theta} + r \left[ g + \ddot{z}_0 \right] (\theta  - \frac{\theta^3}{6})+ r \ddot{x}_0(1 -\frac{\theta^2}{2})  + 2r\dot{r} \dot{\theta} = 0
+$$
+
+
+\subsection{Métodos para solucionar la ecuación diferencial}
+
+\subsubsection{Método por promedios}
+
+
+Al considerar solo el movimiento vertical del pivot, tenemos que la ecuación diferencial no dimensional es la siguiente:
+$$u''+[1+\varepsilon\lambda\Omega^2\cos{\Omega\tau}]\left(u-\frac{\varepsilon^2u^3}{6}\right)=0$$
+De donde: $$\tau=\omega t$$ $$\omega_0^2=\frac{g}{r_0}$$ $$\varepsilon\lambda=-\frac{\Delta z}{r_0}$$ $$\Omega=\frac{\omega}{\omega_0}$$
+Con $\lambda$ siendo la proporción de longitud efectiva y la amplitud de oscilación; y $\varepsilon$ el parámetro de control.\\
+
+Usando el método de promedios, podemos estudiar las ecuaciones en coordenadas cartesianas y se propone la solución de la siguiente forma: $$u(\tau)=X(\tau)\cos\left(\frac{\Omega}{2}\tau\right)+Y(\tau)\sin\left(\frac{\Omega}{2}\tau\right)$$
+$$u'(\tau)=-\frac{\Omega}{2}X(\tau)\sin\left(\frac{\Omega}{2}\tau\right)+\frac{\Omega}{2}Y(\tau)\cos\left(\frac{\Omega}{2}\tau\right)$$
+en que esta es una transformación de coordenadas "apretadas". A partir de la restricción de la primera derivada, la sustitución en la ecuación diferencial y promediando sobre un período, obtenemos dos ecuaciones diferenciales autónomas para $X'$ y $Y'$ e introduciendo el parámetro $\varepsilon\sigma=\Omega-2$, tenemos: $$X'=\frac{\pi\varepsilon Y}{12(\varepsilon\sigma+2)^2}[2\lambda\varepsilon^2Y^2-3\varepsilon Y^2-3\varepsilon X^2-6\varepsilon\sigma^2-24\sigma-12\lambda]$$ 
+$$Y'=\frac{\pi\varepsilon Y}{12(\varepsilon\sigma+2)^2}[2\lambda\varepsilon^2X^2+3\varepsilon Y^2+3\varepsilon X^2+6\varepsilon\sigma^2+24\sigma+12\lambda]$$
+Las cuales se pueden solucionar por la respuesta transitoria o igualando $(X',Y')=(0,0)$ y resolver para $X$ y $Y$ para obtener el estado estable de la solución. Las soluciones para el caso del estado estable son:\begin{enumerate}
+    \item $$X=Y=0$$
+    \item $$X^2=-\frac{3}{\lambda\varepsilon^3}(\varepsilon^2\sigma^2+4\varepsilon\sigma-2\lambda\varepsilon+6$$ $$Y^2=\frac{3}{\lambda\varepsilon^3}(\varepsilon^2\sigma^2+4\varepsilon\sigma+2\lambda\varepsilon+6$$
+\end{enumerate}
+\subsubsection{Método por escalado múltiple}
+
+Mediante un proceso de normalización de la ecuación diferencial original, y esta vez permitiendo la existencia de movimiento horizontal, se llega a la siguiente ecuación:
+
+$$
+u'' + \left[ 1 + \varepsilon \lambda_1 \Omega^2 \cos \Omega \tau \right] \left\{ u - \frac{\varepsilon^2 u^3}{6} \right\} - \varepsilon^2 \lambda_2 \Omega^2 \cos \Omega \tau \frac{u^2}{2} = - \lambda_2 \Omega^2 \cos \Omega \tau$$
+
+donde:
+
+$$ \tau = \omega t\omega_0 \;\;\; \epsilon\lambda_1 = -\frac{\Delta z}{r_0}$$
+$$  w_0^2= \frac{g}{r_0} \;\;\; \Omega = \frac{\omega}{\omega_0}$$
+
+Su solución se puede obtener aplicando el método de escalado múltiple, donde las soluciones $u$ y $t$ se suponen de la siguiente forma:
+
+$$
+u = u_0 + \epsilon u_1 + \epsilon^2u_2 +\dots
+$$
+$$
+t = T_0 + \epsilon T_1 + \epsilon^2T_2 + \dots
+$$
+
+Reemplazando estas soluciones dentro de la ecuación diferencial, se proceden a igualar términos en base de cual orden de $\epsilon$ hacen parte como constantes:
+
+$$
+\varepsilon^0: \quad D_0^2 u_0 + u_0 = -\lambda_2 \Omega^2 \cos \Omega T_0
+$$
+$$
+\varepsilon^1: \quad D_0^2 u_1 + u_1 = -2 D_0 D_1 u_0 - u_0 \lambda_1 \cos \Omega T_0 + \frac{1}{2} \lambda_2 \Omega^2 u_0^2 \cos \Omega T_0
+$$
+
+$$
+\varepsilon^2: \quad D_0^2 u_2 + u_2 = -\lambda_1 u_1 \cos \Omega T_0 - 2 D_0 D_1 u_1 - D_1^2 u_0 + \frac{u_0^3}{6} + \lambda_2 u_0 u_1 \Omega^2 \
+$$
+
+Que permiten obtener el valor de las posibles resonancias $\Omega$:
+
+
+$$
+\Omega \in \{ \frac{1}{2}, 1, 2, 3\}
+$$
+
+
+\section{Referencias}
+\begingroup
+\renewcommand{\section}[2]{}
+\begin{thebibliography}{0}
+\setlength{\parskip}{0mm}
+\setlength{\itemsep}{-0.3mm}
+\small
+
+\bibitem{Artículo 1} Guarín-Zapata, N. (2021, June 21), \textit{ Sloshing in coffee as a pumped pendulum},  
+arXiv.org. https://arxiv.org/abs/2106.11435.
+\bibitem{Artículo 2}R. Ibrahim (2005), \textit{Liquid Sloshing Dynamics - Theory and Applications}
+
+\end{thebibliography}
+\end{document}
